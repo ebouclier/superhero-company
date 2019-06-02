@@ -1,17 +1,21 @@
 package com.superhero.managemissions.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import org.hibernate.annotations.ResultCheckStyle;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,21 +26,33 @@ import lombok.NonNull;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Missions {
+@JsonIgnoreProperties("heroes")
+@SQLDelete(sql = "UPDATE Missions set COMPLETED = true where id=?", check = ResultCheckStyle.COUNT)
+@Where(clause = "DELETED = false")
+public class Missions implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue
     private Long id;
 
     private @NonNull String missionName;
-    private @NonNull Boolean isCompleted;
-    private @NonNull Boolean isDeleted;
+    @Column(name = "COMPLETED")
+    private @NonNull Boolean isCompleted = false;
+    @Column(name = "DELETED")
+    private @NonNull Boolean isDeleted = false;
     // @Column
-    @ManyToMany(mappedBy = "missions")
-    @JsonIgnoreProperties("missions")
-    private Set<SuperHero> heroes;
+    @ManyToMany(fetch = FetchType.LAZY)
+    private Set<SuperHero> heroes = new HashSet<SuperHero>();
 
     public Missions(String missionName) {
         this.missionName = missionName;
     }
+    
+    public Missions(String missionName, Set<SuperHero> superheroes) {
+        this.missionName = missionName;
+        this.heroes = superheroes;
+    }
+    
 }

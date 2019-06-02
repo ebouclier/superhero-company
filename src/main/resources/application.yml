@@ -1,3 +1,6 @@
+server:
+  servlet:
+    context-path: "/SuperHeroMission" 
 spring:
   main:
     banner-mode: "off"
