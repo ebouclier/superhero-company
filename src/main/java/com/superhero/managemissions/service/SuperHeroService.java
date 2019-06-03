@@ -2,6 +2,12 @@ package com.superhero.managemissions.service;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import javax.transaction.Transactional;
+
+import com.superhero.managemissions.model.Missions;
 import com.superhero.managemissions.model.SuperHero;
 import com.superhero.managemissions.repository.SuperHeroRepository;
 
@@ -14,6 +20,9 @@ public class SuperHeroService implements ISuperHeroService {
     @Autowired
     SuperHeroRepository superherorepository;
 
+    @PersistenceContext
+    EntityManager em;
+
     @Override
     public List<SuperHero> findAll() {
         return (List<SuperHero>) superherorepository.findAll();
@@ -21,7 +30,34 @@ public class SuperHeroService implements ISuperHeroService {
 
     @Override
     public SuperHero findbyNameSuperHero(String superheroname) {
-        return null;
+        TypedQuery<SuperHero> sp = em.createQuery("SELECT sp FROM SuperHero sp WHERE sp.superHeroName = :name", SuperHero.class);
+        sp.setParameter("name", superheroname);
+        return sp.getSingleResult();
+    }
+
+    @Override
+    public void addSuperHero(SuperHero superhero) {
+        superherorepository.save(superhero);
+    }
+
+    @Transactional
+    @Override
+    public void updateSuperHero(SuperHero superHero) {
+        em.merge(superHero);
+    }
+    
+    @Transactional
+    @Override
+    public void deleteSuperHero(SuperHero superhero) {
+        SuperHero sp = em.find(SuperHero.class, superhero.getId());
+
+        for (Missions missions : sp.getMissions()){
+            if (!missions.getIsCompleted()){
+                em.remove(missions);
+            }
+        }
+        em.remove(sp);
+        // superherorepository.delete(superhero);
     }
 
 }
