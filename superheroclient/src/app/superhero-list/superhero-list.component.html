@@ -1,12 +1,6 @@
-<mat-card>
-  <mat-card-title>List of SuperHeroes inside the company</mat-card-title>
-  <mat-card-content>
-    <mat-list>
-      <mat-list-item *ngFor="let superhero of superheros">
-          <img mat-list-avatar src="{{superhero.giphyUrl}}" alt="{{superhero.superHeroName}}">
-          <h3 mat-line>{{superhero.superHeroName}}</h3>
-      </mat-list-item>
 
-    </mat-list>
-  </mat-card-content>
-</mat-card>
+<h2>List of SuperHeroes inside the company</h2>
+<div *ngFor="let superhero of superheros">
+  <img src="{{ superhero.giphyUrl }}" alt="{{ superhero.superHeroName }}" />
+  <h3>{{ superhero.superHeroName }}</h3>
+</div>
