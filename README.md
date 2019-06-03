@@ -1,4 +1,4 @@
-# superhero-company
+# Super Hero Company
 Application for managing a SuperHero Company
 ## Launching the application
 ### From Maven
