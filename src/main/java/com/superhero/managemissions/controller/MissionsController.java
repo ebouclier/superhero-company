@@ -19,7 +19,7 @@ import lombok.Data;
 
 @Data
 @RestController
-@Api(value = "Operations for managing missions for SuperHeroes")
+@Api(value = "missions", description = "Operations for managing missions for SuperHeroes")
 public class MissionsController {
 
     @Autowired

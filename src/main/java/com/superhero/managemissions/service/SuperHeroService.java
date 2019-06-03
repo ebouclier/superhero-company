@@ -45,10 +45,11 @@ public class SuperHeroService implements ISuperHeroService {
     public void updateSuperHero(SuperHero superHero) {
         em.merge(superHero);
     }
-
+    
+    @Transactional
     @Override
     public void deleteSuperHero(SuperHero superhero) {
-        SuperHero sp = em.find(SuperHero.class, 1);
+        SuperHero sp = em.find(SuperHero.class, superhero.getId());
 
         for (Missions missions : sp.getMissions()){
             if (!missions.getIsCompleted()){
